@@ -407,7 +407,10 @@ def grad_central_difference(
     vals2 = [x if j != arg else x - up for j, x in enumerate(vals)]
     delta: Tensor = f(*vals1).sum() - f(*vals2).sum()
 
-    return delta[0] / (2.0 * epsilon)
+    #функции сравнения не дифференцируемы,
+    #их производная всегда ноль, 
+    #а central difference из-за разрыва даёт огромные значения
+    return delta[0]/(2.0*epsilon) if abs(delta[0]/(2.0*epsilon)) < 1e5 else 0
 
 
 def grad_check(f: Any, *vals: Tensor) -> None:
