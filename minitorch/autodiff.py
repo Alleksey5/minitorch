@@ -23,7 +23,17 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
     # TODO: Implement for Task 1.1.
-    raise NotImplementedError('Need to implement for Task 1.1')
+    vals = list(vals)
+    vals1 = vals.copy()
+    vals2 = vals.copy()
+
+    vals1[arg] += epsilon
+    vals2[arg] -= epsilon
+
+    f1 = f(*vals1)
+    f2 = f(*vals2)
+    return (f1 - f2) / (2 * epsilon)
+    # raise NotImplementedError('Need to implement for Task 1.1')
 
 
 variable_count = 1
@@ -62,7 +72,20 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         Non-constant Variables in topological order starting from the right.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    visited = set()
+    order = []
+
+    def visit(var: Variable):
+        if var.unique_id in visited or var.is_constant():
+            return
+        visited.add(var.unique_id)
+        for parent in var.parents:
+            visit(parent)
+        order.append(var)
+
+    visit(variable)
+    return reversed(order)
+    # raise NotImplementedError('Need to implement for Task 1.4')
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -77,7 +100,19 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    nodes = list(topological_sort(variable))
+
+    derivatives = {v.unique_id: 0.0 for v in nodes}
+    derivatives[variable.unique_id] = deriv
+
+    for v in nodes:
+        d = derivatives[v.unique_id]
+        if v.is_leaf():
+            v.accumulate_derivative(d)
+        else:
+            for parent, parent_grad in v.chain_rule(d):
+                derivatives[parent.unique_id] += parent_grad
+    # raise NotImplementedError('Need to implement for Task 1.4')
 
 
 @dataclass
