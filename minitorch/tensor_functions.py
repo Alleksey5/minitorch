@@ -410,7 +410,7 @@ def grad_central_difference(
     #функции сравнения не дифференцируемы,
     #их производная всегда ноль, 
     #а central difference из-за разрыва даёт огромные значения
-    return delta[0]/(2.0*epsilon) if abs(delta[0]/(2.0*epsilon)) < 1e5 else 0
+    return delta[0] / (2.0 * epsilon)
 
 
 def grad_check(f: Any, *vals: Tensor) -> None:
