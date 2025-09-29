@@ -111,6 +111,8 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
             v.accumulate_derivative(d)
         else:
             for parent, parent_grad in v.chain_rule(d):
+                if parent.unique_id not in derivatives:
+                    derivatives[parent.unique_id] = 0.0
                 derivatives[parent.unique_id] += parent_grad
     # raise NotImplementedError('Need to implement for Task 1.4')
 
